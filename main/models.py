@@ -8,6 +8,7 @@ from django.dispatch import receiver
 from mezzanine.core.models import Displayable, Ownable
 from mezzanine.generic.models import Rating
 from mezzanine.generic.fields import RatingField, CommentsField
+from django.contrib.gis.db.models import PointField
 
 
 class Rooms(Displayable, Ownable):
@@ -25,7 +26,13 @@ class Rooms(Displayable, Ownable):
         return ("rooms_detail", (), {"slug": self.slug})
         
 class RoomAddress(models.Model):
-    
+    location = PointField()
+    address_1 = models.CharField(_("address"), max_length=128)
+    address_2 = models.CharField(_("address cont'd"), max_length=128, blank=True)
+    city = models.CharField(_("city"), max_length=64, default="Zanesville")
+    state = USStateField(_("state"), default="OH")
+    zip_code = models.CharField(_("zip code"), max_length=5, default="43701")
+    country = models.CharField()
     
 class CheckList()
         
