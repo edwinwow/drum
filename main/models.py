@@ -1,4 +1,3 @@
-
 from time import time
 from urlparse import urlparse
 
@@ -11,18 +10,34 @@ from mezzanine.generic.models import Rating
 from mezzanine.generic.fields import RatingField, CommentsField
 
 
-class Link(Displayable, Ownable):
-
-    link = models.URLField()
+class Rooms(Displayable, Ownable):
+    
+    address = models.OneToOne(RoomAddress)
+    check_list = models.OneToOne(CheckList)
+    addon = models.OneToOne(addon)
+    status = mdoels.ChoiceField()
     rating = RatingField()
     comments = CommentsField()
+    
 
     @models.permalink
     def get_absolute_url(self):
-        return ("link_detail", (), {"slug": self.slug})
+        return ("rooms_detail", (), {"slug": self.slug})
+        
+class RoomAddress(models.Model):
+    
+    
+class CheckList()
+        
+        
+class Rental(models.Model):
+    
+    rooms = models.ForeignKey(Rooms)
+    status = models.ChoiceField()
+    rent_to = models.ForeignKey("auth.User")
+    date_start = models.TimeField(auto.now, null=False, blank=False)
+    date_end = models.TimeField(null=True, blank=True)
 
-    def domain(self):
-        return urlparse(self.link).netloc
 
 
 class Profile(models.Model):
