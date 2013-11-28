@@ -15,7 +15,6 @@ class Rooms(Displayable, Ownable):
     
     address = models.OneToOne(RoomAddress)
     check_list = models.OneToOne(CheckList)
-    addon = models.OneToOne(addon)
     status = models.ChoiceField()
     rating = RatingField()
     comments = CommentsField()
