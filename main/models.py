@@ -16,7 +16,7 @@ class Rooms(Displayable, Ownable):
     address = models.OneToOne(RoomAddress)
     check_list = models.OneToOne(CheckList)
     addon = models.OneToOne(addon)
-    status = mdoels.ChoiceField()
+    status = models.ChoiceField()
     rating = RatingField()
     comments = CommentsField()
     
@@ -24,6 +24,7 @@ class Rooms(Displayable, Ownable):
     @models.permalink
     def get_absolute_url(self):
         return ("rooms_detail", (), {"slug": self.slug})
+        
         
 class RoomAddress(models.Model):
     location = PointField(null=False, blank=False)
@@ -33,6 +34,17 @@ class RoomAddress(models.Model):
     state = USStateField(_("state"), default="OH")
     zip_code = models.CharField(_("zip code"), max_length=5, default="43701")
     country = models.CharField()
+    
+
+
+class RoomForRent(models.Model):
+    rooms= ForeignKey(Rooms)
+    start_date = models.DateTimeField(auto_now+True)
+    publish_date = models.DateTimeField(auto_now=True)
+    price = models.IntegreteField()
+    internet_status = models.ChoiceField()
+    HUB_status = models.ChoiceField()
+
     
 class CheckList(models.Model):
     aircon = models.CharField(choices=CHECKLIST_CHOICES)
@@ -57,7 +69,15 @@ class Rental(models.Model):
     date_start = models.TimeField(auto.now, null=False, blank=False)
     date_end = models.TimeField(null=True, blank=True)
 
-
+class Payment(models.Model):
+    rooms = models.ForeignKey(Rooms)
+    rental_fee = models. integretField()
+    rental_fee_status = models.ChoiceField()
+    internet_fee = models. integretField()
+    internet_fee_status = models.ChoiceField()
+    HUB_fee = models. integretField()
+    HUB_fee_status = models.ChoiceField()
+    
 
 class Profile(models.Model):
 
