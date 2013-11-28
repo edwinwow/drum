@@ -1,4 +1,3 @@
-
 from datetime import timedelta
 
 from django.contrib.auth.models import User
@@ -68,16 +67,16 @@ class ScoreOrderingView(UserFilterView):
         return context
 
 
-class LinkView(object):
+class RoomsView(object):
     """
     List and detail view mixin for links - just defines the correct
     queryset.
     """
     def get_queryset(self):
-        return Link.objects.published().select_related("user", "user__profile")
+        return Rooms.objects.published().select_related("user", "user__profile")
 
 
-class LinkList(LinkView, ScoreOrderingView):
+class RoomsList(LinkView, ScoreOrderingView):
     """
     List view for links, which can be for all users (homepage) or
     a single user (links from user's profile page). Links can be
