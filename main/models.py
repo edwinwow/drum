@@ -26,7 +26,7 @@ class Rooms(Displayable, Ownable):
         return ("rooms_detail", (), {"slug": self.slug})
         
 class RoomAddress(models.Model):
-    location = PointField()
+    location = PointField(null=False, blank=False)
     address_1 = models.CharField(_("address"), max_length=128)
     address_2 = models.CharField(_("address cont'd"), max_length=128, blank=True)
     city = models.CharField(_("city"), max_length=64, default="Zanesville")
@@ -34,7 +34,19 @@ class RoomAddress(models.Model):
     zip_code = models.CharField(_("zip code"), max_length=5, default="43701")
     country = models.CharField()
     
-class CheckList()
+class CheckList(models.Model):
+    aircon = models.CharField(choices=CHECKLIST_CHOICES)
+    fan = models.CharField(choices=CHECKLIST_CHOICES)
+    tv = models.CharField(choices=CHECKLIST_CHOICES)
+    door_status = models.CharField(choices=CHECKLIST_CHOICES)
+    lock_status = models.CharField(choices=CHECKLIST_CHOICES)
+    bed_status = models.CharField(choices=CHECKLIST_CHOICES)
+    frezzer_status = models.CharField(choices=CHECKLIST_CHOICES)
+    table_status = models.CharField(choices=CHECKLIST_CHOICES)
+    chair_status = models.CharField(choices=CHECKLIST_CHOICES)
+    celling_status = models.CharField(choices=CHECKLIST_CHOICES)
+    mirror_status = models.CharField(choices=CHECKLIST_CHOICES)
+    
         
         
 class Rental(models.Model):
@@ -50,28 +62,10 @@ class Rental(models.Model):
 class Profile(models.Model):
 
     user = models.OneToOneField("auth.User")
-    website = models.URLField(blank=True)
     bio = models.TextField(blank=True)
-    karma = models.IntegerField(default=0, editable=False)
+    rating = RatingField()
+    comments = CommentsField()
 
     def __unicode__(self):
-        return "%s (%s)" % (self.user, self.karma)
+        return "%s (%s)" % (self.user)
 
-
-@receiver(post_save, sender=Rating)
-def karma(sender, **kwargs):
-    """
-    Each time a rating is saved, check its value and modify the
-    profile karma for the related object's user accordingly.
-    Since ratings are either +1/-1, if a rating is being edited,
-    we can assume that the existing rating is in the other direction,
-    so we multiply the karma modifier by 2.
-    """
-    rating = kwargs["instance"]
-    value = int(rating.value)
-    if not kwargs["created"]:
-        value *= 2
-    content_object = rating.content_object
-    if rating.user != content_object.user:
-        queryset = Profile.objects.filter(user=content_object.user)
-        queryset.update(karma=models.F("karma") + value)
